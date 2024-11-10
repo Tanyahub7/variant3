@@ -1,0 +1,30 @@
+import numpy as np
+
+
+payoff_matrix = np.array([
+    [200, 300, 150],
+    [750, 200, 500],
+    [300, 800, 450]
+])
+
+probabilities = np.array([0.1, 0.5, 0.3])  # Ймовірності економічних умов
+priorities = np.array([2, 1])  # Вектор пріоритетів (більша вага для мінімуму дисперсії)
+
+# 1. Обчислення очікуваного прибутку для кожного рішення
+expected_profits = payoff_matrix @ probabilities
+
+# 2. Обчислення дисперсій прибутку для кожного рішення
+variances = np.var(payoff_matrix, axis=1)
+
+# 3. Нормалізація дисперсій та середніх значень прибутку для врахування пріоритетів
+normalized_profits = expected_profits / np.linalg.norm(expected_profits)
+normalized_variances = variances / np.linalg.norm(variances)
+
+# 4. Розрахунок зважених оцінок з урахуванням пріоритетів
+weighted_scores = priorities[0] * normalized_variances + priorities[1] * normalized_profits
+
+# 5. Вибір рішення з мінімальним зваженим значенням
+optimal_decision_index = np.argmin(weighted_scores)
+optimal_decision = optimal_decision_index + 1  # +1 для відповідності порядковому номеру
+
+print("Оптимальне рішення:", optimal_decision)
